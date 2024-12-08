@@ -9,5 +9,5 @@ MESH_DIR=TEST
 # cd MeshGeneration/FEM
 # ./gen_mesh_FEM.py -o $MESH_DIR -e $ELE_X -e $ELE_Y -s 0 $ELE_X -s 0 $ELE_Y -p 1 -p 1 -n 2
 # cd ../../
-./FEM_implement.py $MESH_DIR/mesh.cfg --output_x dis_x --output_y dis_y
+./FEM_implement.py $MESH_DIR/mesh.cfg -o dis --output_x dis_x --output_y dis_y
 

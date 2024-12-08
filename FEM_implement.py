@@ -11,9 +11,11 @@ import numpy
 dof = 2  # degree of freedom
 nen = 4  # number of element nodes
 nint = 3  # number of integral points
+support_boundary = 1  ## todo: error with 2,3
+
+## edit here ##
 E = 1  # Young's modulus
 nu = 0.5  # Poisson's ratio
-support_boundary = 1  ## todo: error with 2,3
 Py = -10  ## any value except 1
 
 def gen_H(xi,eta):
