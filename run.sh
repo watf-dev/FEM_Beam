@@ -2,12 +2,29 @@
 # Created: Oct, 27, 2024 21:07:23 by Wataru Fukuda
 set -eu
 
-# ELE_X=$1
-# ELE_Y=$2
-MESH_DIR=TEST
+ELE_X=$1
+ELE_Y=$2
+MESH=MESH
+MESH_GEN_REPO=https://github.com/watf-dev/MeshGeneration.git
+MESH_GEN_DIR=MeshGeneration/FEM
 
-# cd MeshGeneration/FEM
-# ./gen_mesh_FEM.py -o $MESH_DIR -e $ELE_X -e $ELE_Y -s 0 $ELE_X -s 0 $ELE_Y -p 1 -p 1 -n 2
-# cd ../../
-./FEM_implement.py $MESH_DIR/mesh.cfg -o dis --output_x dis_x --output_y dis_y
+### Ensure MeshGeneration repository exists
+if [ ! -d $MESH_GEN_DIR ]; then
+    echo "Cloning MeshGeneration repository..."
+    git clone "$MESH_GEN_REPO"
+else
+    echo "MeshGeneration repository already exists."
+fi
+
+### Generate mesh
+./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $ELE_X -s 0 $ELE_Y -p 1 -p 1 -n 2
+gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh.xmf2
+
+### Run FEM solver
+./FEM_implement.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y
+
+### Generate XDMF files
+gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis n2f dis -o dis.xmf2
+gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis_x n1f dis_x -o dis_x.xmf2
+gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis_y n1f dis_y -o dis_y.xmf2
 

@@ -15,7 +15,7 @@ support_boundary = 1  ## todo: error with 2,3
 
 ## edit here ##
 E = 1  # Young's modulus
-nu = 0.5  # Poisson's ratio
+nu = 0.2  # Poisson's ratio
 Py = -10  ## any value except 1
 
 def gen_H(xi,eta):
