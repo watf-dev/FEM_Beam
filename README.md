@@ -9,7 +9,7 @@ To edit the material properties in the setting section of `FEM_implement.py`, op
 
 ## Run
 ```
-./run.sh 40 10
+./src/run.sh 40 10
 ```
 - arg1: the number of elements in x
 - arg2: the number of elements in y

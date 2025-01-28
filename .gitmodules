@@ -1,9 +1,0 @@
-[submodule "watfio"]
-	path = watfio
-	url = https://github.com/Wataru-f/watfio.git
-[submodule "watf"]
-	path = watf
-	url = https://github.com/Wataru-f/watf.git
-[submodule "watfel"]
-	path = watfel
-	url = https://github.com/Wataru-f/watfel.git
