@@ -2,7 +2,7 @@
 A personal project to show my academic output and skillset.
 
 ## Configuration
-To edit the material properties in the setting section of `FEM_implement.py`, open the file and change values if needed;
+To edit the material properties in the setting section of `FEM_solver.py`, open the file and change values if needed;
 - E: Young's modulus
 - nu: Poisson's ratio
 - Py: vertical load on the edge of right top
