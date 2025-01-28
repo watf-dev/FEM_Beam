@@ -21,7 +21,7 @@ fi
 gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh.xmf2
 
 ### Run FEM solver
-./FEM_implement.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y
+./FEM_solver.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y
 
 ### Generate XDMF files
 gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis n2f dis -o dis.xmf2
