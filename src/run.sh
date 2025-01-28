@@ -4,6 +4,8 @@ set -eu
 
 ELE_X=$1
 ELE_Y=$2
+
+BASE=$(pwd)
 MESH=MESH
 MESH_GEN_REPO=https://github.com/watf-dev/MeshGeneration.git
 MESH_GEN_DIR=MeshGeneration/FEM
@@ -21,7 +23,7 @@ fi
 gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh.xmf2
 
 ### Run FEM solver
-./FEM_solver.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y
+$BASE/src/FEM_solver.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y
 
 ### Generate XDMF files
 gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis n2f dis -o dis.xmf2
