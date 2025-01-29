@@ -109,6 +109,44 @@ class watfFEM():
     for i in fixed_u:
       U_uk = numpy.insert(U_uk,i,[i, 0],axis=0)
     return U_uk
+  def get_stress(self,dis_file):
+    dis_ = numpy.array(dis_file).reshape((-1,self.nsd))
+    nxx_cp = []
+    nyy_cp = []
+    nxy_cp = []
+    C = self._gen_D()
+    x,w = numpy.polynomial.legendre.leggauss(self.nint)
+    for i in range(self.ne):
+      xyz = self.cxyz[self.ien[i]]
+      dis = numpy.array(dis_[self.ien[i]]).reshape((-1,1))
+      nxx_gp = []
+      nyy_gp = []
+      nxy_gp = []
+      for eta in x:
+        for xi in x:
+          B = self._gen_B(xi,eta,xyz)
+          stress_gp = C @ B @ dis
+          nxx_gp.append(stress_gp[0])
+          nyy_gp.append(stress_gp[1])
+          nxy_gp.append(stress_gp[2])
+      e_matrix = self._gen_e_matrix()
+      nxx_cp.append(e_matrix @ nxx_gp)
+      nyy_cp.append(e_matrix @ nyy_gp)
+      nxy_cp.append(e_matrix @ nxy_gp)
+    return numpy.array(nxx_cp), numpy.array(nyy_cp), numpy.array(nxy_cp)
+  def ave_stress(self,stress):
+    ien = self.ien
+    stress = numpy.array(stress).reshape(-1,self.nen)
+    result = numpy.zeros((self.nn),dtype=">f8")
+    for n in range(self.nn):
+      num = 0
+      for i,ien_tmp in enumerate(ien):
+        for j,ien_ in enumerate(ien_tmp):
+          if n==ien_:
+            result[n] += stress[i][j]
+            num += 1
+      result[n] /= num
+    return result
   def print_debug(self,fixed_ien,fixed_u,load_ien,K):
     print("nn",self.nn)
     print("ne",self.ne)
@@ -125,6 +163,26 @@ class watfFEM():
     print("k shape",K.shape)
     self._print_matrix(K,name="K")
 
+  def _gen_e_matrix(self):
+    x,w = numpy.polynomial.legendre.leggauss(self.nint)
+    M = numpy.zeros((4,4),dtype=">f8")
+    counter = 0
+    for eta in x:
+      for xi in x:
+        N = self._gen_N(xi, eta)
+        M[counter] = N
+        counter += 1
+    M[[2,3]] = M[[3,2]]
+    return numpy.linalg.inv(M)
+  def _gen_N(self, xi, eta):
+    N1 = 1/4 * (1.0-xi) * (1.0-eta)
+    N2 = 1/4 * (1.0+xi) * (1.0-eta)
+    N3 = 1/4 * (1.0+xi) * (1.0+eta)
+    N4 = 1/4 * (1.0-xi) * (1.0+eta)
+    # N3 = 1/4 * (1.0+xi) * (1.0+eta)
+    # N4 = 1/4 * (1.0-xi) * (1.0+eta)
+    N = numpy.array([N1,N2,N3,N4],dtype=">f8")
+    return N
   def _gen_H(self,xi,eta):
     H = numpy.zeros((self.dof,self.nen),dtype=">f8")
     H[0][0] = 1/4 * (1 - eta) * (-1)

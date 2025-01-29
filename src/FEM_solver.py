@@ -13,7 +13,7 @@ import wataruel
 ### setting ###
 DOF = 2  # degree of freedom
 NEN = 4  # number of element nodes
-NINT = 3  # number of integral points
+NINT = 2  # number of integral points
 SUPPORT_BOUNDARY = 1  ## todo: error with 2,3
 
 ## edit here ##
@@ -30,6 +30,9 @@ def main():
   parser.add_argument("-o", "--output", help="Output file")
   parser.add_argument("--output_x", help="Output file for X-displacement")
   parser.add_argument("--output_y", help="Output file for Y-displacement")
+  parser.add_argument("--output_nxx", help="Output file for normal stress in x")
+  parser.add_argument("--output_nyy", help="Output file for normal stress in y")
+  parser.add_argument("--output_nxy", help="Output file for shear stress")
   options = parser.parse_args()
 
   solver = watfFEM(options.config, DOF, NEN, NINT, SUPPORT_BOUNDARY, E, NU, PY)
@@ -43,6 +46,13 @@ def main():
   K1, K2, K3, K4, U_uk, U_k, F_k, F_uk = solver.split_matrix(K,U,F)
   U_uk = solver.calc_displacement(K1,K2,U_uk,U_k,F_k)
   U_uk = solver.fix_U_uk(U_uk,fixed_u)
+
+  ### post processing
+  dis_file = U_uk[:,1]
+  nxx, nyy, nxy = solver.get_stress(dis_file)
+  nxx = solver.ave_stress(nxx)
+  nyy = solver.ave_stress(nyy)
+  nxy = solver.ave_stress(nxy)
 
   if DEBUG:
     solver.print_debug(fixed_ien,fixed_u,load_ien,K)
@@ -67,6 +77,27 @@ def main():
     print(f"Wrote to {options.output_y}")
     if DEBUG:
       print("U_uk_y",U_uk_y)
+
+  if options.output_nxx:
+    nxx = numpy.array(nxx, dtype=">f8")
+    nxx.tofile(options.output_nxx)
+    print(f"Wrote to {options.output_nxx}")
+    if DEBUG:
+      print("nxx",nxx)
+
+  if options.output_nyy:
+    nyy = numpy.array(nyy, dtype=">f8")
+    nyy.tofile(options.output_nyy)
+    print(f"Wrote to {options.output_nyy}")
+    if DEBUG:
+      print("nyy",nyy)
+
+  if options.output_nxy:
+    nxy = numpy.array(nxy, dtype=">f8")
+    nxy.tofile(options.output_nxy)
+    print(f"Wrote to {options.output_nxy}")
+    if DEBUG:
+      print("nxy",nxy)
 
 
 if(__name__ == '__main__'):
