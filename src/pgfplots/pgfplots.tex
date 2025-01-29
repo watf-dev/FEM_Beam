@@ -37,12 +37,12 @@
   cycle list name=color list,
   cycle list={
     {mark=*, mark size=2pt, color=red},
-    {mark=none, color=blue},
-    {mark=none, color=orange},
-    {mark=none, color=green},
-    {mark=none, color=pink},
-    {mark=none, color=yellow},
-    {mark=none, color=purple},
+    {mark=*, mark size=2pt, color=blue},
+    {mark=*, mark size=2pt, color=orange},
+    {mark=*, mark size=2pt, color=green},
+    {mark=*, mark size=2pt, color=pink},
+    {mark=*, mark size=2pt, color=yellow},
+    {mark=*, mark size=2pt, color=purple},
   },
   title style={font=\normalsize\rmfamily},
   xlabel style={font=\normalsize\rmfamily},
@@ -54,7 +54,14 @@
 \begin{document}
 \begin{tikzpicture}
   \begin{axis}
-    \addplot table [x index=2, y index=3] {max_dis_y.txt};
+    \addplot table [x index=2, y index=3] {max_dis_y_height1.txt};
+    \addlegendentry{ele over height = 1};
+    \addplot table [x index=2, y index=3] {max_dis_y_height4.txt};
+    \addlegendentry{ele over height = 4};
+    \addplot table [x index=2, y index=3] {max_dis_y_height10.txt};
+    \addlegendentry{ele over height = 10};
+    \addplot table [x index=2, y index=3] {max_dis_y_square.txt};
+    \addlegendentry{ele aspect ratio = 1};
   \end{axis}
 \end{tikzpicture}
 \end{document}
