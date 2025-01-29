@@ -34,6 +34,7 @@ def main():
   parser.add_argument("--output_nxx", help="Output file for normal stress in x")
   parser.add_argument("--output_nyy", help="Output file for normal stress in y")
   parser.add_argument("--output_nxy", help="Output file for shear stress")
+  parser.add_argument("--y_positive_flag", action="store_true", help="Inverse y value from negative to positive")
   options = parser.parse_args()
 
   solver = watfFEM(options.config, DOF, NEN, NINT, SUPPORT_BOUNDARY, E, NU, PY)
@@ -77,6 +78,8 @@ def main():
 
   if options.output_disy:
     U_uk_y = numpy.array(U_uk[1::2],dtype=">f8")
+    if options.y_positive_flag:
+      U_uk_y *= -1
     U_uk_y.tofile(os.path.join(options.output_dir,options.output_disy))
     print(f"Wrote to {options.output_disy}")
     if DEBUG:

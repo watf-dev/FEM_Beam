@@ -15,20 +15,25 @@ OUTPUT=output
 
 ### Ensure MeshGeneration repository exists
 if [ ! -d $MESH_GEN_DIR ]; then
-    echo "Cloning MeshGeneration repository..."
-    git clone "$MESH_GEN_REPO"
+  echo "Cloning MeshGeneration repository..."
+  git clone "$MESH_GEN_REPO"
 else
-    echo "MeshGeneration repository already exists."
+  echo "MeshGeneration repository already exists."
 fi
 
 ### Generate mesh
-./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $RANGE_X -s 0 $RANGE_Y -p 1 -p 1 -n 2
-gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh_x$1_y$2.xmf2
+if [ ! -d $MESH ]; then
+  echo "Generating mesh..."
+  ./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $RANGE_X -s 0 $RANGE_Y -p 1 -p 1 -n 2
+  gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh_x$1_y$2.xmf2
+else
+  echo "Mesh already exists."
+fi
 
 ### Run FEM solver
-$BASE/FEM_solver.py $MESH/mesh.cfg --output_dir $OUTPUT --output_dis dis_x$1_y$2 --output_disx dis_x_x$1_y$2 --output_disy dis_y_x$1_y$2 --output_nxx nxx_x$1_y$2 --output_nyy nyy_x$1_y$2 --output_nxy nxy_x$1_y$2
+$BASE/FEM_solver.py $MESH/mesh.cfg --output_dir $OUTPUT --output_dis dis_x$1_y$2 --output_disx dis_x_x$1_y$2 --output_disy dis_y_x$1_y$2 --output_nxx nxx_x$1_y$2 --output_nyy nyy_x$1_y$2 --output_nxy nxy_x$1_y$2 --y_positive_flag
 
 ### Generate XDMF files
-gen_xdmf_wataf.py $MESH/mesh.cfg -i $OUTPUT --fs dis_x$1_y$2 n2f dis --fs dis_x_x$1_y$2 n1f dis_x --fs dis_y_x$1_y$2 n1f dis_y -o dis_x$1_y$2.xmf2 
+gen_xdmf_wataf.py $MESH/mesh.cfg -i $OUTPUT --fs dis_x$1_y$2 n2f dis --fs dis_x_x$1_y$2 n1f dis_x --fs dis_y_x$1_y$2 n1f dis_y_abs -o dis_x$1_y$2.xmf2 
 gen_xdmf_wataf.py $MESH/mesh.cfg -i $OUTPUT --fs nxx_x$1_y$2 n1f nxx --fs nyy_x$1_y$2 n1f nyy --fs nxy_x$1_y$2 n1f nxy -o stress_x$1_y$2.xmf2 
  
