@@ -1,7 +1,9 @@
 # FEM solver for cantilever beam
 
 ## Configuration
+
 ![config pic](figs/config.pdf)
+
 To edit the material properties in the setting section of `FEM_solver.py`, open the file and change values if needed;
 - E: Young's modulus
 - nu: Poisson's ratio
@@ -19,7 +21,7 @@ Visualization of the results, example for slaced displacement of each node;
 ![Example of displacement](figs/pic1.png)
 
 ## Example Results
-![dis with arrow square](figs/dis_with_arrow_square.pdf)
+![dis with arrow square](figs/disa_square.pdf)
 ![convergence](figs/convergence.pdf)
 
 ## Appendix
