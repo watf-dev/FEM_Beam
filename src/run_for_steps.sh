@@ -25,11 +25,15 @@ fi
 
 ### Generate mesh
 if [ ! -d $MESH ]; then
-  echo "Generating mesh..."
   ./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $RANGE_X -s 0 $RANGE_Y -p 1 -p 1 -n 2
   gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh_${NAME}_$4.xmf2
 else
   echo "Mesh already exists."
+fi
+if [ ! -d mesh_${NAME}_$4.xmf2 ]; then
+  gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh_${NAME}_$4.xmf2
+else
+  echo "Mesh xmf2 already exists."
 fi
 
 ### Run FEM solver
