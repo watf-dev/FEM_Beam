@@ -2,7 +2,7 @@
 
 ## Configuration
 
-![config pic](figs/config.pdf)
+![config pic](figs/config.png)
 
 To edit the material properties in the setting section of `FEM_solver.py`, open the file and change values if needed;
 - E: Young's modulus
@@ -15,14 +15,61 @@ To edit the material properties in the setting section of `FEM_solver.py`, open 
 ```
 - arg1: the number of elements in x
 - arg2: the number of elements in y
-
-## Visualization with ParaView
-Visualization of the results, example for slaced displacement of each node;
-![Example of displacement](figs/pic1.png)
+```
+./src/run_steps.sh
+```
 
 ## Example Results
-![dis with arrow square](figs/disa_square.pdf)
-![convergence](figs/convergence.pdf)
+### Comparison of Tip Displacement Across Different Configurations
+![convergence](figs/convergence.png)
+
+---
+
+### The number of elments over height = 1
+<p align="center">
+  <img src="figs/disa_height1.png" width="400">
+  <img src="figs/nxx_height1.png" width="400">
+</p>
+<p align="center">
+  <img src="figs/nyy_height1.png" width="400">
+  <img src="figs/nxy_height1.png" width="400">
+</p>
+
+---
+
+### The number of elments over height = 4
+<p align="center">
+  <img src="figs/disa_height4.png" width="400">
+  <img src="figs/nxx_height4.png" width="400">
+</p>
+<p align="center">
+  <img src="figs/nyy_height4.png" width="400">
+  <img src="figs/nxy_height4.png" width="400">
+</p>
+
+---
+
+### The number of elments over height = 10
+<p align="center">
+  <img src="figs/disa_height10.png" width="400">
+  <img src="figs/nxx_height10.png" width="400">
+</p>
+<p align="center">
+  <img src="figs/nyy_height10.png" width="400">
+  <img src="figs/nxy_height10.png" width="400">
+</p>
+
+---
+
+### The element aspect ratio = 1
+<p align="center">
+  <img src="figs/disa_square.png" width="400">
+  <img src="figs/nxx_square.png" width="400">
+</p>
+<p align="center">
+  <img src="figs/nyy_square.png" width="400">
+  <img src="figs/nxy_square.png" width="400">
+</p>
 
 ## Appendix
 ### Cloning the Repository
