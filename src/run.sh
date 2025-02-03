@@ -4,32 +4,35 @@ set -eu
 
 ELE_X=$1
 ELE_Y=$2
+RANGE_X=10
+RANGE_Y=1
 
-BASE=${pwd}
+BASE=$(pwd)
 MESH=MESH
 MESH_GEN_REPO=https://github.com/watf-dev/MeshGeneration.git
 MESH_GEN_DIR=MeshGeneration/FEM
+OUTPUT=output
 
 ### Ensure MeshGeneration repository exists
 if [ ! -d $MESH_GEN_DIR ]; then
-    echo "Cloning MeshGeneration repository..."
-    git clone "$MESH_GEN_REPO"
+  echo "Cloning MeshGeneration repository..."
+  git clone "$MESH_GEN_REPO"
 else
-    echo "MeshGeneration repository already exists."
+  echo "MeshGeneration repository already exists."
 fi
 
 ### Generate mesh
-./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $ELE_X -s 0 $ELE_Y -p 1 -p 1 -n 2
-gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh.xmf2
+if [ ! -d $MESH ]; then
+  ./$MESH_GEN_DIR/src/gen_mesh_FEM.py -o $MESH -e $ELE_X -e $ELE_Y -s 0 $RANGE_X -s 0 $RANGE_Y -p 1 -p 1 -n 2
+  gen_xdmf_wataf.py $MESH/mesh.cfg -o mesh.xmf2
+else
+  echo "Mesh exists"
+fi
 
 ### Run FEM solver
-$BASE/src/FEM_solver.py $MESH/mesh.cfg -o dis --output_x dis_x --output_y dis_y --output_nxx nxx --output_nyy nyy --output_nxy nxy
+$BASE/src/FEM_solver.py $MESH/mesh.cfg --output_dir $OUTPUT --output_dis dis --output_disx disx --output_disy disy --output_nxx nxx --output_nyy nyy --output_nxy nxy --y_positive_flag
 
 ### Generate XDMF files
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis n2f dis -o dis.xmf2
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis_x n1f dis_x -o dis_x.xmf2
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs dis_y n1f dis_y -o dis_y.xmf2
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs nxx n1f nxx -o nxx.xmf2
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs nyy n1f nyy -o nyy.xmf2
-gen_xdmf_wataf.py $MESH/mesh.cfg --fs nxy n1f nxy -o nxy.xmf2
+gen_xdmf_wataf.py $MESH/mesh.cfg -i $OUTPUT --fs dis n2f dis --fs disx n1f disx --fs disy n1f disy_abs -o dis.xmf2 
+gen_xdmf_wataf.py $MESH/mesh.cfg -i $OUTPUT --fs nxx n1f nxx --fs nyy n1f nyy --fs nxy n1f nxy -o stress.xmf2 
 
